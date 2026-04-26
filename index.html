@@ -58,8 +58,8 @@ function displayDeck() {
   for (let card in deck) {
     const li = document.createElement("li");
 
- li.innerHTML = `
-  <img src="${cards[card]}" width="50">
+li.innerHTML = `
+  <img src="${cards[card]}" width="60">
   ${card} ×${deck[card]}
   <button onclick="removeCard('${card}')">削除</button>
 `;
