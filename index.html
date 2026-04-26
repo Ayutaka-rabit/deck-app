@@ -10,6 +10,14 @@
       text-align: center;
     }
 
+    #cardArea {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
     #deckList {
       display: flex;
       flex-wrap: wrap;
@@ -33,9 +41,17 @@
     }
 
     button {
+      border: none;
+      background: none;
+    }
+
+    button img {
+      border-radius: 5px;
+    }
+
+    .delete-btn {
       margin-top: 5px;
       padding: 5px;
-      border: none;
       background: #ff6b6b;
       color: white;
       border-radius: 5px;
@@ -47,53 +63,54 @@
 
 <h1>カードを選ぶ</h1>
 
-<!-- カード選択（画像付き） -->
-<button onclick="addCard('ルフィ')">
-  <img src="st01-012.webp" width="80">
-</button>
-
-<button onclick="addCard('ゾロ')">
-  <img src="st01-013.webp" width="80">
-</button>
-
-<button onclick="addCard('ナミ')">
-  <img src="st01-007.webp" width="80">
-</button>
+<!-- 自動生成される -->
+<div id="cardArea"></div>
 
 <h2>デッキ</h2>
 <p>合計枚数：<span id="total">0</span></p>
 <ul id="deckList"></ul>
 
 <script>
-// カード画像データ
-const cards = {
-  "ルフィ": "st01-012.webp",
-  "ゾロ": "st01-013.webp",
-  "ナミ": "st01-007.webp"
-};
 
-// 保存データ読み込み
+// ▼ カード一覧（ここに追加するだけでOK🔥）
+const cardList = [
+  { name: "ルフィ", img: "st01-012.webp" },
+  { name: "ゾロ", img: "st01-013.webp" },
+  { name: "ナミ", img: "st01-007.webp" },
+
+  // ↓ここにどんどん追加
+  { name: "サンジ", img: "sanji.webp" },
+  { name: "チョッパー", img: "chopper.webp" },
+  { name: "エース", img: "ace.webp" }
+];
+
+// ▼ 保存データ
 let deck = JSON.parse(localStorage.getItem("deck")) || {};
 
+// ▼ カード画像取得
+function getCardImage(name) {
+  const card = cardList.find(c => c.name === name);
+  return card ? card.img : "";
+}
+
+// ▼ カード追加
 function addCard(name) {
 
-  // 合計50枚制限
   let total = 0;
   for (let card in deck) {
     total += deck[card];
   }
+
   if (total >= 50) {
     alert("デッキは50枚まで！");
     return;
   }
 
-  // 同カード4枚制限
   if (deck[name] >= 4) {
     alert("同じカードは4枚まで！");
     return;
   }
 
-  // 追加
   if (deck[name]) {
     deck[name]++;
   } else {
@@ -103,6 +120,7 @@ function addCard(name) {
   displayDeck();
 }
 
+// ▼ デッキ表示
 function displayDeck() {
   const list = document.getElementById("deckList");
   list.innerHTML = "";
@@ -111,26 +129,26 @@ function displayDeck() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <img src="${cards[card]}">
+      <img src="${getCardImage(card)}">
       <p>${card}</p>
       <p>×${deck[card]}</p>
-      <button onclick="removeCard('${card}')">削除</button>
+      <button class="delete-btn" onclick="removeCard('${card}')">削除</button>
     `;
 
     list.appendChild(li);
   }
 
-  // 合計枚数表示
   let total = 0;
   for (let card in deck) {
     total += deck[card];
   }
+
   document.getElementById("total").textContent = total;
 
-  // 保存
   localStorage.setItem("deck", JSON.stringify(deck));
 }
 
+// ▼ 削除
 function removeCard(name) {
   deck[name]--;
   if (deck[name] <= 0) {
@@ -139,7 +157,17 @@ function removeCard(name) {
   displayDeck();
 }
 
-// 初期表示
+// ▼ カード一覧を自動生成🔥
+const area = document.getElementById("cardArea");
+
+cardList.forEach(card => {
+  const btn = document.createElement("button");
+  btn.innerHTML = `<img src="${card.img}" width="80">`;
+  btn.onclick = () => addCard(card.name);
+  area.appendChild(btn);
+});
+
+// ▼ 初期表示
 displayDeck();
 
 </script>
