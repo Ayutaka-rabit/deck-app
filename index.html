@@ -2,30 +2,82 @@
 <html>
 <head>
   <title>ワンピカードデッキ</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f0f2f5;
+      text-align: center;
+    }
+
+    #deckList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 0;
+    }
+
+    #deckList li {
+      list-style: none;
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      width: 120px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #deckList img {
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 5px;
+      padding: 5px;
+      border: none;
+      background: #ff6b6b;
+      color: white;
+      border-radius: 5px;
+    }
+  </style>
+
 </head>
 <body>
 
 <h1>カードを選ぶ</h1>
 
-<button onclick="addCard('ルフィ')">ルフィ</button>
-<button onclick="addCard('ゾロ')">ゾロ</button>
-<button onclick="addCard('ナミ')">ナミ</button>
+<!-- カード選択（画像付き） -->
+<button onclick="addCard('ルフィ')">
+  <img src="st01-012.webp" width="80">
+</button>
+
+<button onclick="addCard('ゾロ')">
+  <img src="st01-013.webp" width="80">
+</button>
+
+<button onclick="addCard('ナミ')">
+  <img src="st01-007.webp" width="80">
+</button>
 
 <h2>デッキ</h2>
 <p>合計枚数：<span id="total">0</span></p>
 <ul id="deckList"></ul>
 
 <script>
-// 保存データを読み込み（なければ空）
-let deck = JSON.parse(localStorage.getItem("deck")) || {};
+// カード画像データ
 const cards = {
   "ルフィ": "st01-012.webp",
   "ゾロ": "st01-013.webp",
   "ナミ": "st01-007.webp"
 };
+
+// 保存データ読み込み
+let deck = JSON.parse(localStorage.getItem("deck")) || {};
+
 function addCard(name) {
 
-  // 合計枚数チェック（50枚まで）
+  // 合計50枚制限
   let total = 0;
   for (let card in deck) {
     total += deck[card];
@@ -41,7 +93,7 @@ function addCard(name) {
     return;
   }
 
-  // 追加処理
+  // 追加
   if (deck[name]) {
     deck[name]++;
   } else {
@@ -58,11 +110,13 @@ function displayDeck() {
   for (let card in deck) {
     const li = document.createElement("li");
 
-li.innerHTML = `
-  <img src="${cards[card]}" width="60">
-  ${card} ×${deck[card]}
-  <button onclick="removeCard('${card}')">削除</button>
-`;
+    li.innerHTML = `
+      <img src="${cards[card]}">
+      <p>${card}</p>
+      <p>×${deck[card]}</p>
+      <button onclick="removeCard('${card}')">削除</button>
+    `;
+
     list.appendChild(li);
   }
 
@@ -73,7 +127,7 @@ li.innerHTML = `
   }
   document.getElementById("total").textContent = total;
 
-  // データ保存（ここ重要）
+  // 保存
   localStorage.setItem("deck", JSON.stringify(deck));
 }
 
@@ -85,7 +139,7 @@ function removeCard(name) {
   displayDeck();
 }
 
-// ページ開いたときに表示
+// 初期表示
 displayDeck();
 
 </script>
