@@ -16,25 +16,38 @@
 <ul id="deckList"></ul>
 
 <script>
-let deck = {};
-
+// 保存データを読み込み（なければ空）
+let deck = JSON.parse(localStorage.getItem("deck")) || {};
+const cards = {
+  "ルフィ": "st01-012.webp",
+  "ゾロ": "st01-013.webp",
+  "ナミ": "st01-007.webp"
+};
 function addCard(name) {
- let total = 0;
-for (let card in deck) {
-  total += deck[card];
-}
 
-if (total >= 50) {
-  alert("デッキは50枚まで！");
-  return;
-}if (deck[name] >= 4) {
-  alert("同じカードは4枚まで！");
-  return;
-} if (deck[name]) {
+  // 合計枚数チェック（50枚まで）
+  let total = 0;
+  for (let card in deck) {
+    total += deck[card];
+  }
+  if (total >= 50) {
+    alert("デッキは50枚まで！");
+    return;
+  }
+
+  // 同カード4枚制限
+  if (deck[name] >= 4) {
+    alert("同じカードは4枚まで！");
+    return;
+  }
+
+  // 追加処理
+  if (deck[name]) {
     deck[name]++;
   } else {
     deck[name] = 1;
   }
+
   displayDeck();
 }
 
@@ -45,20 +58,23 @@ function displayDeck() {
   for (let card in deck) {
     const li = document.createElement("li");
 
-    li.innerHTML = `
-      ${card} ×${deck[card]}
-      <button onclick="removeCard('${card}')">削除</button>
-    `;
-
+ li.innerHTML = `
+  <img src="${cards[card]}" width="50">
+  ${card} ×${deck[card]}
+  <button onclick="removeCard('${card}')">削除</button>
+`;
     list.appendChild(li);
   }
 
-  // 合計枚数
+  // 合計枚数表示
   let total = 0;
   for (let card in deck) {
     total += deck[card];
   }
   document.getElementById("total").textContent = total;
+
+  // データ保存（ここ重要）
+  localStorage.setItem("deck", JSON.stringify(deck));
 }
 
 function removeCard(name) {
@@ -68,6 +84,10 @@ function removeCard(name) {
   }
   displayDeck();
 }
+
+// ページ開いたときに表示
+displayDeck();
+
 </script>
 
 </body>
