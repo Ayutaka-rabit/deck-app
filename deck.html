@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ワンピカードデッキ</title>
+</head>
+<body>
+
+<h1>カードを選ぶ</h1>
+
+<button onclick="addCard('ルフィ')">ルフィ</button>
+<button onclick="addCard('ゾロ')">ゾロ</button>
+<button onclick="addCard('ナミ')">ナミ</button>
+
+<h2>デッキ</h2>
+<p>合計枚数：<span id="total">0</span></p>
+<ul id="deckList"></ul>
+
+<script>
+let deck = {};
+
+function addCard(name) {
+ let total = 0;
+for (let card in deck) {
+  total += deck[card];
+}
+
+if (total >= 50) {
+  alert("デッキは50枚まで！");
+  return;
+}if (deck[name] >= 4) {
+  alert("同じカードは4枚まで！");
+  return;
+} if (deck[name]) {
+    deck[name]++;
+  } else {
+    deck[name] = 1;
+  }
+  displayDeck();
+}
+
+function displayDeck() {
+  const list = document.getElementById("deckList");
+  list.innerHTML = "";
+
+  for (let card in deck) {
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+      ${card} ×${deck[card]}
+      <button onclick="removeCard('${card}')">削除</button>
+    `;
+
+    list.appendChild(li);
+  }
+
+  // 合計枚数
+  let total = 0;
+  for (let card in deck) {
+    total += deck[card];
+  }
+  document.getElementById("total").textContent = total;
+}
+
+function removeCard(name) {
+  deck[name]--;
+  if (deck[name] <= 0) {
+    delete deck[name];
+  }
+  displayDeck();
+}
+</script>
+
+</body>
+</html>
